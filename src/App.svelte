@@ -105,6 +105,20 @@
       }
   }
 
+  function afterClick(row, col, event) {
+    event = event ? event : window.event;
+    var keyCode = event.code;
+    if(keyCode != "Backspace" && keyCode != "Enter" && keyCode != "ArrowLeft" && keyCode != "ArrowRight") {
+        let len = displayedCells[currentWord].length;
+          if (len == currentCell + 1) {
+              currentCell = currentCell;
+          } else {
+              currentCell += 1;
+          }
+        displayedCells[currentWord][currentCell].focus();
+      }
+  }
+
   function addDisplayedCells() {
       const crossword = document.getElementById("crossword");
       let arr = [];
@@ -146,8 +160,10 @@
               ) {
                   currentWord += 1;
               }
-              currentCell = 0;
+              setTimeout(() => {
+                currentCell = 0;
               displayedCells[currentWord][currentCell].focus();
+            }, 100);
           }
       } else {
           finalTime = Date.now() - startTime;
@@ -308,8 +324,9 @@
                       maxlength="1"
                       bind:value={typedLetters[index][index2]}
                       on:click={setCurrentCell}
-                      on:input={() => checkWord(index)}
+                      on:keyup={() => afterClick(index, index2)}
                       on:keydown={() => cursorMove(index, index2)}
+                      on:input={() => checkWord(index)}
                       disabled={wordsArr[index] ==
                       typedLetters[index].join("")
                           ? true
@@ -410,13 +427,13 @@
   .keyWord label {
       margin-top: -4px;
       font-size: 0.7em;
-      width: 10px;
+      width: 13px;
       text-align: center;
       z-index: 1;
   }
   .word label + .letter,
   .keyWord .letter {
-      margin-left: -11px;
+      margin-left: -14px;
   }
   .word svg {
       position: absolute;
